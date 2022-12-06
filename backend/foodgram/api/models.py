@@ -7,7 +7,7 @@ from django.core.validators import MinValueValidator
 class IngredientInRecipe(models.Model):
     name = models.CharField(max_length=200, blank=True)
     measurement_unit = models.CharField(max_length=200, blank=True)
-
+    
     def __str__(self):
         return self.name
 
@@ -62,3 +62,40 @@ class Amount_ingredients(models.Model):
             MinValueValidator(
                 1, message='Minimum amount of ingridients 1'),),
                 blank=True)
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='favorites'
+    )
+
+    class Meta:
+        ordering = ['id']
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'recipe'],
+                                    name='favourites'),
+        ]
+
+class Cart(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='cart'
+    )
+
+    class Meta:
+        ordering = ['id']
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'recipe'],
+                                    name='shopping_list'),
+        ]

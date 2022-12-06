@@ -5,11 +5,14 @@ from rest_framework import routers
 from django.conf import settings
 from django.conf.urls.static import static
 
-from api.views import RecipesViewSet
+from api.views import RecipesViewSet, IngredientsViewSet
+from api.views import TagsViewSet
 from users.views import UserViewSet
 
 router = routers.DefaultRouter()
 router.register(r'recipes', RecipesViewSet)
+router.register(r'ingredients', IngredientsViewSet)
+router.register(r'tags', TagsViewSet)
 router.register(r'users', UserViewSet)
 
 urlpatterns = [

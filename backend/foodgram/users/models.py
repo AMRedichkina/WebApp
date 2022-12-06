@@ -5,12 +5,12 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class Follow(models.Model):
-    user = models.ForeignKey(
+    follower = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='follower'
     )
-    author = models.ForeignKey(
+    following = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='following',

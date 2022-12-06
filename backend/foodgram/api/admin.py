@@ -1,16 +1,33 @@
 from django.contrib import admin
-from .models import IngredientInRecipe, Recipe, Tag
+from .models import IngredientInRecipe, Recipe, Tag, Amount_ingredients
+from .models import Favorite, Cart
 
-@admin.register(Recipe)
-class RecipesAdmin(admin.ModelAdmin):
-    list_display = ('name', 'author',)
-    list_filter = ('name', 'author', 'tags',)
 
-@admin.register(Tag)
+class Amount_ingredients_Inline(admin.StackedInline):
+    model = Amount_ingredients
+    extra = 3
+
+
+class RecipeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'author', 'count_favorites')
+    list_filter = ('author', 'name', 'tags')
+    inlines = [Amount_ingredients_Inline]
+
+    def count_favorites(self, obj):
+        return obj.favorites.count()
+
+
 class TagAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug', 'color',)
 
-@admin.register(IngredientInRecipe)
+
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('name', 'measurement_unit',)
     list_filter = ('name',)
+
+
+admin.site.register(Tag, TagAdmin)
+admin.site.register(IngredientInRecipe, IngredientAdmin)
+admin.site.register(Recipe, RecipeAdmin)
+admin.site.register(Cart)
+admin.site.register(Favorite)
