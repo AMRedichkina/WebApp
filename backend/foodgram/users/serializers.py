@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from api.models import Recipe
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework.validators import UniqueValidator
 from .models import User, Follow
@@ -23,6 +22,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             'last_name': {'required': True},
         }
 
+
 class CustomUserSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField()
 
@@ -32,8 +32,11 @@ class CustomUserSerializer(UserSerializer):
             return False
         return Follow.objects.filter(follower=user, following=obj.id).exists()
 
-
     class Meta:
         model = User
-        fields = ('email', 'id', 'username', 'first_name', 'last_name', 'is_subscribed')
-
+        fields = ('email',
+                  'id',
+                  'username',
+                  'first_name',
+                  'last_name',
+                  'is_subscribed')

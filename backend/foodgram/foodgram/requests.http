@@ -1,4 +1,4 @@
-GET   http://127.0.0.1:8000/api/recipes/download_shopping_cart/
+GET   http://127.0.0.1:8000/api/recipes/
 Authorization: Token f2b82d869ed48cb25d7d9aba69263c0b30f890d2
 Content-Type: application/json
 

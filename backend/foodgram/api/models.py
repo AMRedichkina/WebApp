@@ -4,10 +4,10 @@ from colorfield.fields import ColorField
 from django.core.validators import MinValueValidator
 
 
-class IngredientInRecipe(models.Model):
+class Ingredients(models.Model):
     name = models.CharField(max_length=200, blank=True)
     measurement_unit = models.CharField(max_length=200, blank=True)
-    
+
     def __str__(self):
         return self.name
 
@@ -32,7 +32,7 @@ class Recipe(models.Model):
         on_delete=models.CASCADE,
     )
     ingredients = models.ManyToManyField(
-        IngredientInRecipe,
+        Ingredients,
         through='Amount_ingredients',
         related_name='recipies',
     )
@@ -40,17 +40,24 @@ class Recipe(models.Model):
     image = models.ImageField(upload_to='recipes/', blank=True)
     text = models.TextField(max_length=200, blank=True)
     cooking_time = models.PositiveSmallIntegerField(
-        validators=(
-            MinValueValidator(
-                1, message='Minimum cooking time 1 minute'),),
-                blank=True)
-    
+        validators=(MinValueValidator(
+            1,
+            message='Minimum cooking time 1 minute'
+            ),),
+        blank=True
+    )
+    pub_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-pub_date']
+
     def __str__(self):
         return self.name
-    
+
+
 class Amount_ingredients(models.Model):
     ingredient = models.ForeignKey(
-        IngredientInRecipe,
+        Ingredients,
         on_delete=models.CASCADE,
     )
     recipe = models.ForeignKey(
@@ -58,10 +65,10 @@ class Amount_ingredients(models.Model):
         on_delete=models.CASCADE,
     )
     amount = models.PositiveSmallIntegerField(
-        validators=(
-            MinValueValidator(
-                1, message='Minimum amount of ingridients 1'),),
-                blank=True)
+        validators=(MinValueValidator(
+            1,
+            message='Minimum amount of ingridients 1'),),
+        blank=True)
 
 
 class Favorite(models.Model):
@@ -81,6 +88,7 @@ class Favorite(models.Model):
             models.UniqueConstraint(fields=['user', 'recipe'],
                                     name='favourites'),
         ]
+
 
 class Cart(models.Model):
     user = models.ForeignKey(
