@@ -44,9 +44,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./backend
-          file: ./backend/Dockerfile
           push: true
           tags: amredichkina/foodgram_project_react:latest
+          
   deploy:
     runs-on: ubuntu-latest
     needs: build_and_push_to_docker_hub
