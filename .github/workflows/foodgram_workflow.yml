@@ -45,7 +45,7 @@ jobs:
         with:
           context: ./backend/foodgram
           push: true
-          tags: amredichkina/foodgram_project_react:v.3
+          tags: amredichkina/foodgram_project_react:v.4
           
   deploy:
     runs-on: ubuntu-latest
