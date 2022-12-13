@@ -68,38 +68,35 @@ class RecipesViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'],
             permission_classes=[IsAuthenticated])
     def download_shopping_cart(self, request):
-        ingredients_list = {}
-        ingredients = Amount_ingredients.objects.filter(
-            recipe__cart__user=request.user).values_list(
-            'ingredient__name', 'ingredient__measurement_unit',
-            'amount')
-        for item in ingredients:
-            name = item[0]
-            if name not in ingredients_list:
-                ingredients_list[name] = {
-                    'measurement_unit': item[1],
-                    'amount': item[2]
-                }
-            else:
-                ingredients_list[name]['amount'] += item[2]
-        pdfmetrics.registerFont(
-            TTFont('Slimamif', 'Slimamif.ttf', 'UTF-8'))
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = ('attachment; '
-                                           'filename="shopping_list.pdf"')
-        page = canvas.Canvas(response)
-        page.setFont('Slimamif', size=24)
-        page.drawString(200, 800, 'Shopping list')
-        page.setFont('Slimamif', size=16)
-        height = 750
-        for i, (name, data) in enumerate(ingredients_list.items(), 1):
-            page.drawString(75, height, (f'<{i}> {name} - {data["amount"]}, '
-                                         f'{data["measurement_unit"]}'))
-            height -= 25
-        page.showPage()
-        page.save()
-        return response
+        user = request.user
+        shopping_cart = user.cart.all()
+        list = {}
+        for item in shopping_cart:
+            recipe = item.recipe
+            ingredients = Amount_ingredients.objects.filter(recipe=recipe)
+            for ingredient in ingredients:
+                amount = ingredient.amount
+                name = ingredient.ingredient.name
+                measurement_unit = ingredient.ingredient.measurement_unit
+                if name not in list:
+                    list[name] = {
+                        'measurement_unit': measurement_unit,
+                        'amount': amount
+                    }
+                else:
+                    list[name]['amount'] = (
+                        list[name]['amount'] + amount
+                    )
 
+        shopping_list = []
+        for item in list:
+            shopping_list.append(f'{item} - {list[item]["amount"]} '
+                                 f'{list[item]["measurement_unit"]} \n')
+        response = HttpResponse(shopping_list, 'Content-Type: text/plain')
+        response['Content-Disposition'] = 'attachment; filename="shoplist.txt"'
+
+        return response
+        
     def add_obj(self, model, user, pk):
         obj = model.objects.prefetch_related('user').filter(
             user=user, recipe__id=pk)
