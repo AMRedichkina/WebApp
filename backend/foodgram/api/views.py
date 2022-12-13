@@ -20,6 +20,7 @@ from .serializers import IngredientSerializer, TagSerializer
 
 from api.pagination import LimitPageNumberPagination
 
+
 class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredients.objects.all()
     serializer_class = IngredientSerializer
