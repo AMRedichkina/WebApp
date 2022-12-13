@@ -68,7 +68,6 @@ class RecipesViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'],
             permission_classes=[IsAuthenticated])
     def download_shopping_cart(self, request):
-        ingredients_list = {}
         ingredients = Amount_ingredients.objects.all().values_list(
             'ingredients__name', 'ingredients__measurement_unit',
             'amount')
