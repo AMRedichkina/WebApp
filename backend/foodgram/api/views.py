@@ -7,10 +7,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfgen import canvas
-
 from .filters import RecipeFilter, IngredientSearchFilter
 from .models import Recipe, Favorite, Cart, Amount_ingredients
 from .models import Ingredients, Tag
@@ -96,7 +92,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         response['Content-Disposition'] = 'attachment; filename="shoplist.txt"'
 
         return response
-        
+
     def add_obj(self, model, user, pk):
         obj = model.objects.prefetch_related('user').filter(
             user=user, recipe__id=pk)
