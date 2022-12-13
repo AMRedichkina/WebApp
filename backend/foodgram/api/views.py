@@ -3,7 +3,6 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -15,27 +14,30 @@ from reportlab.pdfgen import canvas
 from .filters import RecipeFilter, IngredientSearchFilter
 from .models import Recipe, Favorite, Cart, Amount_ingredients
 from .models import Ingredients, Tag
-from .permissions import AuthorOrReadOnly
+from .permissions import AuthorOrReadOnly, IsAdminOrReadOnly
 from .serializers import RecipesSerializer, CropRecipeSerializer
 from .serializers import IngredientSerializer, TagSerializer
 
+from api.pagination import LimitPageNumberPagination
 
 class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredients.objects.all()
     serializer_class = IngredientSerializer
     filter_backends = (IngredientSearchFilter,)
     search_fields = ('^name',)
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.select_related()
     serializer_class = TagSerializer
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class RecipesViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.select_related()
     serializer_class = RecipesSerializer
-    pagination_class = PageNumberPagination
+    pagination_class = LimitPageNumberPagination
     permission_classes = (AuthorOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
