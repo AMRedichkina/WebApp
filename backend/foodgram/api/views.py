@@ -98,7 +98,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
             height -= 25
         page.showPage()
         page.save()
-        return 
+        return response
 
     def add_obj(self, model, user, pk):
         obj = model.objects.prefetch_related('user').filter(
