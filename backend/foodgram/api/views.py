@@ -113,7 +113,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete_obj(self, model, user, pk):
-        obj = model.objects.objects.prefetch_related('user').filter(
+        obj = model.objects.filter(
             user=user, recipe__id=pk)
         if obj.exists():
             obj.delete()
