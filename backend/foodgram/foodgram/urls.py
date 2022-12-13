@@ -19,6 +19,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api/', include('djoser.urls')),
-    path('api/', include('djoser.urls.authtoken')),
+    path('api/auth/', include('djoser.urls.authtoken')),
     path('__debug__/', include('debug_toolbar.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
