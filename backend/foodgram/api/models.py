@@ -8,6 +8,15 @@ class Ingredients(models.Model):
     name = models.CharField(max_length=200, blank=True)
     measurement_unit = models.CharField(max_length=200, blank=True)
 
+    class Meta:
+        ordering = ['-id']
+        verbose_name = 'Ingredient'
+        verbose_name_plural = 'Ingredients'
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'measurement_unit'],
+                                    name='unique ingredient')
+        ]
+
     def __str__(self):
         return self.name
 
