@@ -70,6 +70,15 @@ class Amount_ingredients(models.Model):
             message='Minimum amount of ingridients 1'),),
         blank=True)
 
+    class Meta:
+        ordering = ['-id']
+        verbose_name = 'Amount ingredients'
+        verbose_name_plural = 'Amount ingredients'
+        constraints = [
+            models.UniqueConstraint(fields=['ingredient', 'recipe'],
+                                    name='unique ingredients recipe')
+        ]
+
 
 class Favorite(models.Model):
     user = models.ForeignKey(
