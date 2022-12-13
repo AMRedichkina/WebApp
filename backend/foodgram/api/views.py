@@ -72,15 +72,6 @@ class RecipesViewSet(viewsets.ModelViewSet):
         ingredients = Amount_ingredients.objects.all().values_list(
             'ingredients__name', 'ingredients__measurement_unit',
             'amount')
-        for item in ingredients:
-            name = item[0]
-            if name not in ingredients_list:
-                ingredients_list[name] = {
-                    'measurement_unit': item[1],
-                    'amount': item[2]
-                }
-            else:
-                ingredients_list[name]['amount'] += item[2]
         pdfmetrics.registerFont(
             TTFont('Slimamif', 'Slimamif.ttf', 'UTF-8'))
         response = HttpResponse(content_type='application/pdf')
@@ -91,10 +82,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         page.drawString(200, 800, 'Shopping list')
         page.setFont('Slimamif', size=16)
         height = 750
-        for i, (name, data) in enumerate(ingredients_list.items(), 1):
-            page.drawString(75, height, (f'<{i}> {name} - {data["amount"]}, '
-                                         f'{data["measurement_unit"]}'))
-            height -= 25
+        page.drawString(75, height, (ingredients))
         page.showPage()
         page.save()
         return response
