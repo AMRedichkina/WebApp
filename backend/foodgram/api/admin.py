@@ -3,7 +3,6 @@ from .models import Ingredients, Recipe, Tag, Amount_ingredients
 from .models import Favorite, Cart
 
 
-
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('name', 'author', 'count_favorites')
     list_filter = ('author', 'name', 'tags')
@@ -23,6 +22,7 @@ class IngredientAdmin(admin.ModelAdmin):
 
 class AmAmount_ingredients(admin.ModelAdmin):
     list_display = ('ingredient', 'recipe', 'amount')
+
 
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Ingredients, IngredientAdmin)
