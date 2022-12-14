@@ -70,7 +70,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
     def download_shopping_cart(self, request):
         final_list = {}
         ingredients = Amount_ingredients.objects.filter(
-            recipe__cart__user=request.user).values_list(
+            recipe__cart__user=1).values_list(
             'ingredient__name', 'ingredient__measurement_unit',
             'amount')
         for item in ingredients:
