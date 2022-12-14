@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -11,12 +11,14 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 
+
 from .filters import RecipeFilter, IngredientSearchFilter
 from .models import Recipe, Favorite, Cart, Amount_ingredients
 from .models import Ingredients, Tag
 from .permissions import AuthorOrReadOnly, IsAdminOrReadOnly
 from .serializers import RecipesSerializer, CropRecipeSerializer
 from .serializers import IngredientSerializer, TagSerializer
+from .serializers import RecipeWriteSerializer
 
 from api.pagination import LimitPageNumberPagination
 
@@ -42,6 +44,11 @@ class RecipesViewSet(viewsets.ModelViewSet):
     permission_classes = (AuthorOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
+
+    def get_serializer_class(self):
+        if self.request.method in SAFE_METHODS:
+            return RecipesSerializer
+        return RecipeWriteSerializer
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)

@@ -42,6 +42,14 @@ class Amount_ingredientsSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'measurement_unit', 'amount')
         model = Amount_ingredients
 
+class IngredientsEditSerializer(serializers.ModelSerializer):
+
+    id = serializers.IntegerField()
+    amount = serializers.IntegerField()
+
+    class Meta:
+        model = Ingredients
+        fields = ('id', 'amount')
 
 class RecipesSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
@@ -75,6 +83,54 @@ class RecipesSerializer(serializers.ModelSerializer):
                   'cooking_time')
         model = Recipe
 
+
+class RecipeWriteSerializer(serializers.ModelSerializer):
+    image = Base64ImageField(
+        max_length=None,
+        use_url=True)
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Tag.objects.all())
+    ingredients = IngredientsEditSerializer(
+        many=True)
+
+    class Meta:
+        model = Recipe
+        fields = '__all__'
+        read_only_fields = ('author',)
+    
+    def create_ingredients(self, ingredients, recipe):
+        for ingredient in ingredients:
+            Amount_ingredients.objects.create(
+                recipe=recipe,
+                ingredient_id=ingredient.get('id'),
+                amount=ingredient.get('amount'), )
+
+    def create(self, validated_data):
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        recipe = Recipe.objects.create(**validated_data)
+        recipe.tags.set(tags)
+        self.create_ingredients(ingredients, recipe)
+        return recipe
+
+    def update(self, instance, validated_data):
+        if 'ingredients' in validated_data:
+            ingredients = validated_data.pop('ingredients')
+            instance.ingredients.clear()
+            self.create_ingredients(ingredients, instance)
+        if 'tags' in validated_data:
+            instance.tags.set(
+                validated_data.pop('tags'))
+        return super().update(
+            instance, validated_data)
+
+    def to_representation(self, instance):
+        return RecipesSerializer(
+            instance,
+            context={
+                'request': self.context.get('request')
+            }).data
 
 class FollowSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(
