@@ -10,7 +10,7 @@ from api.models import Ingredients
 DATA_ROOT = os.path.join(settings.BASE_DIR, 'data')
 
 
-class ExistsError(Exception):
+class AlreadyExistsError(Exception):
     pass
 
 
@@ -27,15 +27,14 @@ class Command(BaseCommand):
                       encoding='utf-8') as f:
                 data = json.load(f)
                 for ingredient in data:
-                    Ingredients.objects.create(name=ingredient["name"],
-                                                  measurement_unit=ingredient[
-                                                      "measurement_unit"])
-                    if Ingredients.objects.filter(name=ingredient["name"],
-                                                  measurement_unit=ingredient[
-                                                      "measurement_unit"]).exists():
-                        raise  ExistsError(f'Ingredient {ingredient["name"]} '
-                                           f'{ingredient["measurement_unit"]} '
-                                           f'already exists')
+                    try:
+                        Ingredients.objects.create(name=ingredient["name"],
+                                                   measurement_unit=ingredient[
+                                                    "measurement_unit"])
+                    except IntegrityError:
+                        raise AlreadyExistsError(f'Ингридиет {ingredient["name"]} '
+                                                f'{ingredient["measurement_unit"]} '
+                                                f'уже есть в базе')
 
         except FileNotFoundError:
-            raise CommandError('There is not file in directory data')
+            raise CommandError('Файл отсутствует в директории data')
