@@ -87,7 +87,7 @@ class Amount_ingredients(models.Model):
             models.UniqueConstraint(fields=['ingredient', 'recipe'],
                                     name='unique ingredients recipe')
         ]
-    
+
     def __str__(self):
         return self.amount
 
