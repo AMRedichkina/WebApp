@@ -15,16 +15,15 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug', 'color',)
 
 
-class Amount_ingredients_in_line(admin.TabularInline):
+class Amount_ingredients_Inline(admin.StackedInline):
     model = Amount_ingredients
+    extra = 3
 
 
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('name', 'measurement_unit',)
     list_filter = ('name',)
-    inlines = [
-        Amount_ingredients_in_line,
-    ]
+    inlines = [Amount_ingredients_Inline]
 
 
 admin.site.register(Tag, TagAdmin)
