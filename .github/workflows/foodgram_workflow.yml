@@ -45,7 +45,7 @@ jobs:
         with:
           context: ./backend/foodgram
           push: true
-          tags: amredichkina/foodgram_project_react:v.11_7
+          tags: amredichkina/foodgram_project_react:v.11_8
           
   deploy:
     runs-on: ubuntu-latest
@@ -60,7 +60,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_frontent:latest
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_project_react:v.11_7
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_project_react:v.11_8
             sudo docker-compose stop
             rm .env
             sudo docker-compose rm backend
