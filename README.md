@@ -16,7 +16,7 @@
 Foodgram is implemented for publishing recipes. Authorized users can subscribe to their favorite authors,
 add recipes to favorites, to purchases, download a shopping list of ingredients for recipes added to purchases
 
-## The project has been launched and is available [at](http://51.250.73.138/recipes)
+## The project has been launched and is available at [(http://51.250.73.138/recipes)]
 
 
 ## Preparing and launching a project from the repository
