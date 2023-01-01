@@ -23,7 +23,7 @@ add recipes to favorites, to purchases, download a shopping list of ingredients 
 
 ### Step 1. Clone the repository:
 ```
-git clone https://github.com/AMRedichkina/foodgram-project-react.git
+git clone git@github.com:AMRedichkina/Website-with-recipes-for-creating-a-list-of-products.git
 ```
 ## To work with a remote server (on ubuntu):
 * Log in to your remote server
